@@ -18,6 +18,14 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 
+/**
+ * routers
+ */
+const bookRouter = require('./routes/book')
+
+
+app.use('/api/book', bookRouter)
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404))

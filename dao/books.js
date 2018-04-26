@@ -1,4 +1,4 @@
-const $sqlQuery = require('./sqlCRUD').book
+const $sqlQuery = require('./sqlCURD').book
 const _ = require('./query')
 
 const books = {

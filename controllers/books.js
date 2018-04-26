@@ -1,5 +1,5 @@
 const Books = require('../dao/books')
-const moment = requrie('moment')
+const moment = require('moment')
 
 module.exports = {
   /**
