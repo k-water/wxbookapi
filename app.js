@@ -5,6 +5,10 @@ const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 
 
+const {
+  authorizeMiddleware
+} = require('./middleware/auth')
+
 const app = express()
 
 // view engine setup
@@ -21,18 +25,14 @@ app.use(express.static(path.join(__dirname, 'public')))
 /**
  * routers
  */
+const loginRouter = require('./routes/login')
 const bookRouter = require('./routes/book')
 
-
+app.use('/login', authorizeMiddleware, loginRouter)
 app.use('/api/book', bookRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404))
-})
-
-// error handler
-app.use(function(err, req, res, next) {
   next(createError(404))
 })
 

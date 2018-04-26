@@ -1,6 +1,6 @@
 const moment = require('moment')
 const _ = require('./query')
-const $sqlQuery = require('./sqlCRUD').user
+const $sqlQuery = require('./sqlCURD').user
 const config = require('../conf/app').userConfig
 
 const user = {

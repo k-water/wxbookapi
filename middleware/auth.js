@@ -7,6 +7,9 @@ const {
   decryptByAES,
   encryptSha1
 } = require('../util/util')
+const {
+  saveUserInfo
+} = require('../controllers/users')
 
 /**
  * 登录校验中间件
@@ -50,9 +53,27 @@ const {
             console.log('-------------decryptedData---------------')
             console.log(decryptedData)
             console.log('-------------decryptedData---------------')
-
+            
+            return saveUserInfo({
+              userInfo: decryptedData,
+              session_key,
+              skey
+            })
+          })
+          .catch(err => {
+            return {
+              result: -3,
+              errmsg: JSON.stringify(err)
+            }
           })
 }
+
+/**
+ * 获取当前用户session_key
+ * @param {*用户临时登录凭证} code 
+ * @param {*小程序appid} appid 
+ * @param {*小程序密钥} appSecret 
+ */
 
 function getSessionKey(code, appid, appSecret) {
   const option = {
