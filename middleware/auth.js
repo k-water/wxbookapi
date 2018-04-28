@@ -10,62 +10,65 @@ const {
 const {
   saveUserInfo
 } = require('../controllers/users')
-
 /**
  * 登录校验中间件
  */
+function authorizeMiddleware(req, res, next) {
+  return authMiddleware(req).then(function (result) {
+    // console.log(result)
+    // 将结果存入响应信息的'auth_data'字段
+    res['auth_data'] = result
+    return next()
 
- function authorizeMiddleware(req, res, next) {
-   return authMiddleware(req)
-            .then(function(result) {
-              res['auth_data'] = result
-              return next()
-            })
- }
+  })
+}
 
- function authMiddleware(req) {
-   const {
-     appid,
-     secret
-   } = config
+function authMiddleware(req) {
+  const {
+    appid,
+    secret
+  } = config
 
-   const {
-     code,
-     encryptedData,
-     iv
-   } = req.query
+  const {
+    code,
+    encryptedData,
+    iv
+  } = req.query
 
-  //  检查参数是否完整
-   if ([code, encryptedData, iv].some(item => !item)) {
-     return {
-       result: -1,
-       errmsg: '缺少参数字段，请检查重试'
-     }
-   }
+  // 检查参数完整性
+  if ([code, encryptedData, iv].some(item => !item)) {
+    return {
+      result: -1,
+      errmsg: '缺少参数字段，请检查后重试'
+    }
+  }
 
-  //  获取session_key和openid
+  // 获取 session_key和 openid
   return getSessionKey(code, appid, secret)
-          .then(resData => {
-            const { session_key } = resData
-            const skey = encryptSha1(session_key)
+    .then(resData => {
+      // 选择加密算法生成自己的登录态标识
+      const {
+        session_key
+      } = resData
+      const skey = encryptSha1(session_key)
+      let decryptedData = JSON.parse(decryptByAES(encryptedData, session_key, iv))
+      // console.log('-------------decryptedData---------------')
+      // console.log(decryptedData)
+      // console.log('-------------decryptedData---------------')
 
-            let decryptedData = JSON.parse(decryptByAES(encryptedData, session_key, iv))
-            console.log('-------------decryptedData---------------')
-            console.log(decryptedData)
-            console.log('-------------decryptedData---------------')
-            
-            return saveUserInfo({
-              userInfo: decryptedData,
-              session_key,
-              skey
-            })
-          })
-          .catch(err => {
-            return {
-              result: -3,
-              errmsg: JSON.stringify(err)
-            }
-          })
+      // 存入用户数据表中
+      return saveUserInfo({
+        userInfo: decryptedData,
+        session_key,
+        skey
+      })
+    })
+    .catch(err => {
+      return {
+        result: -3,
+        errmsg: JSON.stringify(err)
+      }
+    })
 }
 
 /**
@@ -74,20 +77,20 @@ const {
  * @param {*小程序appid} appid 
  * @param {*小程序密钥} appSecret 
  */
-
 function getSessionKey(code, appid, appSecret) {
-  const option = {
+
+  const opt = {
     method: 'GET',
     url: 'https://api.weixin.qq.com/sns/jscode2session',
     params: {
-      appid,
+      appid: appid,
       secret: appSecret,
       js_code: code,
       grant_type: 'authorization_code'
     }
   }
 
-  return http(option).then((response) => {
+  return http(opt).then(function (response) {
     const data = response.data
 
     if (!data.openid || !data.session_key || data.errcode) {
@@ -96,11 +99,12 @@ function getSessionKey(code, appid, appSecret) {
         errmsg: data.errmsg || '返回数据字段不完整'
       }
     } else {
+      //console.log(data)
       return data
     }
+
   })
 }
-
 module.exports = {
   authorizeMiddleware
 }
