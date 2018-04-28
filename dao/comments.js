@@ -1,4 +1,4 @@
-const $sqlQuery = require('./sqlCRUD').comment
+const $sqlQuery = require('./sqlCURD').comment
 const _ = require('./query')
 
 const comments = {
