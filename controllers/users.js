@@ -19,7 +19,7 @@ module.exports = {
    * 获取已购书籍
    */
   getBoughtBooks: function(req, res, next) {
-    User.getBoughtBooks(req.query.skey)
+    Users.getBoughtBooks(req.query.skey)
       .then(resData => {
         if (resData && resData.length) {
           res.json({

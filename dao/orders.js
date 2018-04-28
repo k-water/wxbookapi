@@ -1,5 +1,5 @@
-const $sqlOrderQuery = require('./sqlCRUD').order
-const $sqlUserQuery = require('./sqlCRUD').user
+const $sqlOrderQuery = require('./sqlCURD').order
+const $sqlUserQuery = require('./sqlCURD').user
 
 const _ = require('./query')
 

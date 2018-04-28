@@ -28,10 +28,14 @@ app.use(express.static(path.join(__dirname, 'public')))
 const loginRouter = require('./routes/login')
 const bookRouter = require('./routes/book')
 const commentRouter = require('./routes/comment')
+const orderRouter = require('./routes/order')
+const userRouter = require('./routes/user')
 
 app.use('/login', authorizeMiddleware, loginRouter)
+app.use('/api/user', userRouter)
 app.use('/api/book', bookRouter)
 app.use('/api/comment', commentRouter)
+app.use('/api/order', orderRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

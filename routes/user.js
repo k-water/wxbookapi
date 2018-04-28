@@ -1,8 +1,8 @@
 const express = require('express')
-const User = require('../controllers/user')
+const User = require('../controllers/users')
 const router = express.Router()
 
-router.get('/getBoughtBooks', function (req, res, next) {
+router.get('/getBoughtBook', function (req, res, next) {
   const {
     skey
   } = req.query
