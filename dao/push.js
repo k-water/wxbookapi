@@ -1,5 +1,5 @@
-const $sqlQuery = requrire('./sqlCURD.js').access
-const _  = require('./query')
+const $sqlQuery = require('./sqlCURD.js').access
+const _ = require('./query')
 
 const push = {
   getPusherToken: function() {

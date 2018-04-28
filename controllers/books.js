@@ -79,12 +79,12 @@ module.exports = {
           })
           responseData['lists'] = resCommentData
         } else {
-          resCommentData['lists'] = []
+          responseData['lists'] = []
         }
 
         res.json({
           result: 0,
-          data: resCommentData
+          data: responseData
         })
       })
       .catch(err => {
